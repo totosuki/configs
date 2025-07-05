@@ -1,0 +1,125 @@
+" 基本設定
+set fenc=utf-8
+set nobackup
+set noswapfile
+set autoread
+set hidden
+set showcmd
+set scrolloff=999
+set backspace=indent,eol,start
+
+" 見た目系
+set number
+set cursorline
+set virtualedit=onemore
+set smartindent
+set wildmode=list:longest
+syntax enable
+set ruler
+set statusline=\ %F%m%=%l/%L\ %P\ 
+
+" Tab系
+set expandtab
+set tabstop=4
+set shiftwidth=4
+
+" 検索系
+set ignorecase
+set smartcase
+set incsearch
+set wrapscan
+set hlsearch
+
+" Plugin
+call plug#begin('~/.config/vim/plugged')
+Plug 'scrooloose/nerdtree'
+Plug 'ayu-theme/ayu-vim' 
+Plug 'prabirshrestha/vim-lsp'
+Plug 'mattn/vim-lsp-settings'
+call plug#end()
+
+" NERDTree設定
+let NERDTreeShowHidden=1
+let NERDTreeQuitOnOpen=1
+let NERDTreeAutoDeleteBuffer=1
+let NERDTreeMinimalUI=0
+let NERDTreeDirArrows=1
+let NERDTreeAutoCenter=1
+let NERDTreeWinSize=25
+
+" NERDTreeキーマッピング
+nnoremap <silent> <C-n> :NERDTreeToggle<CR>
+nnoremap <silent> <C-f> :NERDTreeFind<CR>
+
+" vim起動時にNERDTreeを自動で開く（ファイル指定なしの場合）
+autocmd vimenter * if !argc() | NERDTree | endif
+
+" 最後のウィンドウがNERDTreeの場合は自動で閉じる
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
+" テーマ設定
+set termguicolors     
+let ayucolor="mirage" " for mirage version of theme
+colorscheme ayu
+
+" 背景色を透明に設定
+highlight Normal ctermbg=NONE guibg=NONE
+highlight NonText ctermbg=NONE guibg=NONE
+highlight LineNr ctermbg=NONE guibg=NONE
+highlight SignColumn ctermbg=NONE guibg=NONE
+highlight StatusLine ctermbg=NONE guibg=NONE
+highlight StatusLineNC ctermbg=NONE guibg=NONE
+
+" カーソル行の背景色を薄く設定
+highlight CursorLine ctermbg=237 guibg=#3e4b59 cterm=NONE gui=NONE 
+
+" LSP設定
+function! s:on_lsp_buffer_enabled() abort
+    setlocal omnifunc=lsp#complete
+    setlocal signcolumn=yes
+    if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
+    nmap <buffer> gd <plug>(lsp-definition)
+    nmap <buffer> gs <plug>(lsp-document-symbol-search)
+    nmap <buffer> gS <plug>(lsp-workspace-symbol-search)
+    nmap <buffer> gr <plug>(lsp-references)
+    nmap <buffer> gi <plug>(lsp-implementation)
+    nmap <buffer> gt <plug>(lsp-type-definition)
+    nmap <buffer> <leader>rn <plug>(lsp-rename)
+    nmap <buffer> [g <plug>(lsp-previous-diagnostic)
+    nmap <buffer> ]g <plug>(lsp-next-diagnostic)
+    nmap <buffer> K <plug>(lsp-hover)
+    nnoremap <buffer> <expr><c-f> lsp#scroll(+4)
+    nnoremap <buffer> <expr><c-d> lsp#scroll(-4)
+
+    let g:lsp_format_sync_timeout = 1000
+    autocmd! BufWritePre *.rs,*.go call execute('LspDocumentFormatSync')
+    
+    " inoremap <buffer> <expr><c-f> lsp#scroll(+4)
+    " inoremap <buffer> <expr><c-d> lsp#scroll(-4)
+endfunction
+
+augroup lsp_install
+    au!
+    autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+augroup END
+
+" rust-analyzer設定
+if executable('rust-analyzer')
+    au User lsp_setup call lsp#register_server({
+        \ 'name': 'rust-analyzer',
+        \ 'cmd': {server_info->['rust-analyzer']},
+        \ 'whitelist': ['rust'],
+        \ })
+endif
+
+" LSPの見た目設定
+let g:lsp_signs_enabled = 1
+let g:lsp_diagnostics_echo_cursor = 1
+let g:lsp_signs_error = {'text': '✗'}
+let g:lsp_signs_warning = {'text': '⚠'}
+let g:lsp_signs_information = {'text': 'ℹ'}
+let g:lsp_signs_hint = {'text': '💡'}
+let g:lsp_highlight_references_enabled = 1
+
+" 補完設定
+let g:lsp_completion_resolve_timeout = 60
