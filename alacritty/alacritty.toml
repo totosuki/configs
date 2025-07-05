@@ -1,0 +1,50 @@
+# window settings
+[window]
+title = "Alacrittyyyyyy"
+class = "Alacritty"
+dimensions = { columns = 80, lines = 24 }
+padding = { x = 20, y = 20 }
+decorations = "None"
+dynamic_title = true
+startup_mode = "Maximized"
+opacity = 0.6
+blur = true
+
+# Font Settings
+[font]
+normal = { family = "Menlo", style = "Regular" }
+bold = { family = "Menlo", style = "Bold" }
+italic = { family = "Menlo", style = "Italic" }
+size = 18.0
+offset = { x = 2, y = 10 }
+
+
+# Colors
+[colors]
+primary.background = "#000000"
+primary.foreground = "#f8f8f2"
+transparent_background_colors = true
+
+# Bright colors
+bright.black = "#6272a4"
+bright.red = "#ff6e6e"
+bright.green = "#69ff94"
+bright.yellow = "#ffffa5"
+bright.blue = "#d6acff"
+bright.magenta = "#ff92df"
+bright.cyan = "#a4ffff"
+bright.white = "#ffffff"
+
+# Cursor settings
+[cursor]
+style = { shape = "Block", blinking = "Never" }
+unfocused_hollow = true
+
+# Scrolling settings
+[scrolling]
+history = 10000 
+multiplier = 3
+
+# Debug settings
+[debug]
+# render_timer = true
